@@ -1,13 +1,18 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,8 +23,17 @@ public class MainActivity extends AppCompatActivity {
 
         /////////////
 
-        TextView t = (TextView)findViewById(R.layout.hello);
-        t.setText("Hello World!");     ///   динамически сохраняем строку
+        Button button = (Button)findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView t = (TextView) findViewById(R.id.hello);
+                t.setText("Hello World!");
+            }
+        });
+
+        //TextView t = (TextView) findViewById(R.id.hello);
+        //t.setText("Hello World!");     ///   динамически сохраняем строку
 
 
         /////////////////
@@ -27,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-       FloatingActionButton fab = findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
