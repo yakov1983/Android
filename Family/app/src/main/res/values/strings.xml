@@ -2,7 +2,10 @@
     <string name="app_name">Family</string>
     <string name="login_name">Login</string>
     <string name="button_name">Войти</string>
-    <string name="registration_name">Войти</string>
+    <string name="registration_name">Регистриция</string>
     <string name="forget_name">Забыли пароль?</string>
     <string name="errorEntry_name">Неправильно введен логин или пароль</string>
+    <string name="joinBtn_name">Присоединиться</string>
+    <string name="text_name">Создайте новый аккаунт или присоединитесь к существующему</string>
+
 </resources>
