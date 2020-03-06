@@ -11,6 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.family.api.APIService;
+import com.example.family.model.LoginRequest;
+import com.example.family.model.LoginResponse;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -50,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                showMenuActivity();
+                //showMenuActivity();
+                loginUser(login.getText().toString(), password.getText().toString());  ///
             }
         });
 
@@ -84,5 +93,33 @@ public class MainActivity extends AppCompatActivity {
     public void showStartActivity() {
         Intent i = new Intent(this, StartActivity.class);  ///
         startActivity(i);
+    }
+
+    public void loginUser(String email, String password) {
+        LoginRequest r = new LoginRequest();
+        r.email = email;
+        r.password = password;
+        APIService
+                .getInstance()
+                .getAPI()
+                .login(r)
+                .enqueue(new Callback<LoginResponse>() {
+                    @Override  // если все в порядке
+                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                        LoginResponse resp = response.body();
+                        if (!resp.result) {
+                            //TODO : обработка ошибки
+                        } else {
+                            // TODO : сохранить токен в памяти устройства
+                            showMenuActivity();
+                        }
+                    }
+
+                    @Override  /// если ошибка
+                    public void onFailure(Call<LoginResponse> call, Throwable t) {
+
+                        //TODO: обработка ошибки
+                    }
+                });
     }
 }
