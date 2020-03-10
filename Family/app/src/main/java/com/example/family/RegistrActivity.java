@@ -4,10 +4,23 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.example.family.api.APIService;
+import com.example.family.model.LoginRequest;
+import com.example.family.model.LoginResponse;
+import com.example.family.model.RegistrationRequest;
+import com.example.family.model.RegistrationResponce;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegistrActivity extends AppCompatActivity {
 
@@ -54,7 +67,12 @@ public class RegistrActivity extends AppCompatActivity {
                 }
                 if (!error.equals("")) {
                     showError(error);
+                    return;
                 }
+
+                registrUser(name.getText().toString(),    ////  если все в порядке
+                            email.getText().toString(),
+                            password.getText().toString());
             }
         });
     }
@@ -74,5 +92,39 @@ public class RegistrActivity extends AppCompatActivity {
         //alert.setIcon(R.drawable.ic_launcher_foreground)  - создание иконки
 
         alert.create().show();  //  метод вывода ошибки на экран
+    }
+
+    public void registrUser(String name, String email, String password) {
+        RegistrationRequest r = new RegistrationRequest();  /// модель в которой описаны поля для отправки запроса
+        r.email = email;
+        r.password = password;
+        r.name = name;
+        APIService
+                .getInstance()
+                .getAPI()
+                .registration(r)
+                .enqueue(new Callback<RegistrationResponce>() {  ///   для общения с сервером(отправляет запрос на сервер)
+                    @Override  // если все в порядке
+                    public void onResponse(Call<RegistrationResponce> call, Response<RegistrationResponce> response) {
+                        RegistrationResponce resp = response.body();
+                        if (!resp.result) {
+                            showError(resp.error);
+                        } else {
+                            // перход на подтверждение
+
+                            showConfirmActivity();
+                        }
+                    }
+
+                    @Override  /// если ошибка
+                    public void onFailure(Call<RegistrationResponce> call, Throwable t) {
+                        showError(t.getMessage());
+                    }
+                });
+    }
+
+    public void showConfirmActivity() {
+        Intent i = new Intent(this, ConfirmActivity.class);  ///
+        startActivity(i);
     }
 }
