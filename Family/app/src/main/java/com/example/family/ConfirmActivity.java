@@ -10,11 +10,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.family.api.APIBuilder;
 import com.example.family.api.APIService;
 import com.example.family.model.ConfirmRequest;
 import com.example.family.model.ConfirmResponce;
+import com.example.family.model.LoginResponse;
 import com.example.family.model.RegistrationRequest;
 import com.example.family.model.RegistrationResponce;
+import com.google.gson.Gson;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -63,14 +66,44 @@ public class ConfirmActivity extends AppCompatActivity {
         ConfirmRequest r = new ConfirmRequest();  /// модель в которой описаны поля для отправки запроса
         r.code = code;
 
-        APIService
+
+        APIBuilder<ConfirmRequest, ConfirmResponce> builder = new APIBuilder<>();
+
+        builder.execute("confirm", r, ConfirmResponce.class,
+                new APIBuilder.onCallback<ConfirmResponce>() {
+
+                    @Override
+                    public void onResponse(ConfirmResponce resp) {
+                        if (!resp.result) {
+                            showError(resp.error);
+                        } else {
+                            showMenuActivity();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        showError(e.getMessage());
+                    }
+                });
+
+ /*      APIService
                 .getInstance()
                 .getAPI()
                 .confirm(r)
                 .enqueue(new Callback<ConfirmResponce>() {  ///   для общения с сервером(отправляет запрос на сервер)
                     @Override  // если все в порядке
                     public void onResponse(Call<ConfirmResponce> call, Response<ConfirmResponce> response) {
-                        ConfirmResponce resp = response.body();
+                        ConfirmResponce resp = null;
+
+                        if(!response.isSuccessful()) {
+
+                            Gson g = new Gson();
+                            resp = g.fromJson(response.errorBody().charStream(), ConfirmResponce.class);
+                        } else {
+                            resp = response.body();
+                        }
+
                         if (!resp.result) {
                             showError(resp.error);
                         } else {
@@ -85,6 +118,8 @@ public class ConfirmActivity extends AppCompatActivity {
                         showError(t.getMessage());
                     }
                 });
+
+  */
     }
 
     public void showMenuActivity() {

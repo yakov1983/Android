@@ -13,9 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.family.api.APIBuilder;
 import com.example.family.api.APIService;
 import com.example.family.model.LoginRequest;
 import com.example.family.model.LoginResponse;
+import com.google.gson.Gson;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,6 +31,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //  проверяем, выполнен ли вход
+
+        SharedPreferences preferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        if (preferences.contains("API_TOKEN")) {
+            showMenuActivity();
+            return;
+        }
 
 
         TextView sign_upBtn = findViewById(R.id.sign_upBtn);
@@ -99,18 +110,67 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+    public void showError (String error) {
+        errorMsg.setText(error);
+        errorMsg.setVisibility(View.VISIBLE);
+    }
+
     public void loginUser(String email, String password) {
         LoginRequest r = new LoginRequest();  /// модель в которой описаны поля для отправки запроса
         r.email = email;
         r.password = password;
-        APIService
+
+        APIBuilder<LoginRequest, LoginResponse> builder = new APIBuilder<>();
+
+        builder.execute("login", r, LoginResponse.class, new APIBuilder.onCallback<LoginResponse>() {
+            @Override
+            public void onResponse(LoginResponse resp) {
+                if (!resp.result) {
+                    showError(resp.error);
+                } else {
+                    // сохранить токен в памяти устройства
+                    //будем сохранять токен в кэш приложения
+
+                    SharedPreferences preferences =  ///  отвечает за работу кэша
+                            PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("API_TOKEN", resp.token);
+                    editor.apply();  ///   сохраняет на физическую память
+
+                    ////  чтобы получить какое либо значение из кэш  вызываем preferences.getString
+                    //preferences.getString("API_TOKEN", "default"); ключ и значение по умолчанию
+
+                    showMenuActivity();
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+                showError(e.getMessage());
+            }
+        });
+
+        ///////////     выше переделанный код         //////
+/*        APIService
                 .getInstance()
                 .getAPI()
                 .login(r)
                 .enqueue(new Callback<LoginResponse>() {  ///   для общения с сервером(отправляет запрос на сервер)
                     @Override  // если все в порядке
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                        LoginResponse resp = response.body();
+
+                        LoginResponse resp = null;
+
+                        if(!response.isSuccessful()) {
+
+                            Gson g = new Gson();
+                            resp = g.fromJson(response.errorBody().charStream(), LoginResponse.class);
+                        } else {
+                            resp = response.body();
+                        }
+
                         if (!resp.result) {
                             errorMsg.setVisibility(View.VISIBLE);
                             errorMsg.setText(resp.error);
@@ -138,5 +198,7 @@ public class MainActivity extends AppCompatActivity {
                         errorMsg.setText(t.getMessage());  ///  данный метод выведет ошибку
                     }
                 });
+
+ */
     }
 }

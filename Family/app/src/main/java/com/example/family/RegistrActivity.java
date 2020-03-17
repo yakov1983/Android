@@ -12,11 +12,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.family.api.APIBuilder;
 import com.example.family.api.APIService;
 import com.example.family.model.LoginRequest;
 import com.example.family.model.LoginResponse;
 import com.example.family.model.RegistrationRequest;
 import com.example.family.model.RegistrationResponce;
+import com.google.gson.Gson;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -99,14 +101,44 @@ public class RegistrActivity extends AppCompatActivity {
         r.email = email;
         r.password = password;
         r.name = name;
-        APIService
+
+        APIBuilder<RegistrationRequest, RegistrationResponce> builder = new APIBuilder<>();
+
+        builder.execute("registration", r, RegistrationResponce.class,
+                new APIBuilder.onCallback<RegistrationResponce>() {
+
+            @Override
+            public void onResponse(RegistrationResponce resp) {
+                if (!resp.result) {
+                    showError(resp.error);
+                } else {
+                    showConfirmActivity();
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                showError(e.getMessage());
+            }
+        });
+
+/*        APIService
                 .getInstance()
                 .getAPI()
                 .registration(r)
                 .enqueue(new Callback<RegistrationResponce>() {  ///   для общения с сервером(отправляет запрос на сервер)
                     @Override  // если все в порядке
                     public void onResponse(Call<RegistrationResponce> call, Response<RegistrationResponce> response) {
-                        RegistrationResponce resp = response.body();
+                        RegistrationResponce resp = null;
+
+                        if(!response.isSuccessful()) {
+
+                            Gson g = new Gson();
+                            resp = g.fromJson(response.errorBody().charStream(), RegistrationResponce.class);
+                        } else {
+                            resp = response.body();
+                        }
+
                         if (!resp.result) {
                             showError(resp.error);
                         } else {
@@ -121,6 +153,8 @@ public class RegistrActivity extends AppCompatActivity {
                         showError(t.getMessage());
                     }
                 });
+
+ */
     }
 
     public void showConfirmActivity() {

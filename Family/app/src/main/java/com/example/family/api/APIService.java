@@ -16,7 +16,7 @@ public class APIService {
 
             // Паттерн FabricBuilder
             instance.mRetrofit = new Retrofit.Builder()
-                    .baseUrl("http://127.0.0.1:8080")  // указываем адрес сервера
+                    .baseUrl("https://212f349f.ngrok.io")  // указываем адрес сервера
                     .addConverterFactory(GsonConverterFactory.create()) // для конвертации jsona
                     .build();
         }
