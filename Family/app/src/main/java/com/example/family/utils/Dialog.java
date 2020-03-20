@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.example.family.R;
+
 public class Dialog {
     public static void showErrorDialog(Context ctx, String error) {
         ///  создаем всплывающий диалог с ошибкой
@@ -37,6 +39,14 @@ public class Dialog {
         });////   кнопку тоже можно убрать
         //alert.setIcon(R.drawable.ic_launcher_foreground)  - создание иконки
 
+        alert.create().show();  //  метод вывода ошибки на экран
+    }
+
+    public static void showCalendarDialog(Context ctx) {
+        ///  создаем всплывающий диалог с ошибкой
+        AlertDialog.Builder alert = new AlertDialog.Builder(ctx);
+        alert.setView(R.layout.calendar_layout);
+        alert.setCancelable(true);   //
         alert.create().show();  //  метод вывода ошибки на экран
     }
 }
