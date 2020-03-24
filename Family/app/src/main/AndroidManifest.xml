@@ -11,11 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".AddCreditActivity"></activity>
         <activity
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:name=".FinanceActivity">
-
-        </activity>
+            android:name=".FinanceActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity android:name=".ConfirmActivity" />
         <activity android:name=".JoinActivity" />
         <activity android:name=".RegistrActivity" />
