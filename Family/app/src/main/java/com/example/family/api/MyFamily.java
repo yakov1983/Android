@@ -1,5 +1,7 @@
 package com.example.family.api;
 
+import com.example.family.model.AddFinanceRequest;
+import com.example.family.model.AddFinanceResponce;
 import com.example.family.model.ConfirmRequest;
 import com.example.family.model.ConfirmResponce;
 import com.example.family.model.FinanceResponse;
@@ -14,6 +16,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 public interface MyFamily {
@@ -46,4 +49,9 @@ public interface MyFamily {
     ////чтобы задать Query-параметр в Retrofit, необходимо использовать директиву
     ///  @Query("key")
     ///  Retrofit автоматически задаст параметру значение , указанное в аргументе, следующем за директивой
+
+    ////
+
+    @PUT("/finance")
+    Call<AddFinanceResponce> addFinance (@Body AddFinanceRequest r);
 }
