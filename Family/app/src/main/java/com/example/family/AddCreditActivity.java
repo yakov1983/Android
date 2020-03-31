@@ -71,7 +71,7 @@ public class AddCreditActivity extends AppCompatActivity {
                 date.setText(dateStr);
 
                 String timeStr = String.format("%d/%d/%d",
-                        calendar.get(Calendar.HOUR),
+                        calendar.get(Calendar.HOUR_OF_DAY),
                         calendar.get(Calendar.MINUTE),
                         calendar.get(Calendar.SECOND));
                 time.setText(timeStr);
